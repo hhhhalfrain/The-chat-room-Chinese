@@ -124,7 +124,7 @@ class ChatServer(threading.Thread):
         finally:
             lock.release()
 
-    # 将队列que中的消息发送给所有连接到的用户
+    # 将队列que中的消息发送给所有连接到的用户2222
     def sendData(self):
         while True:
             if not que.empty():
