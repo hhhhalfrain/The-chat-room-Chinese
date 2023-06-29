@@ -131,7 +131,7 @@ class ChatServer(threading.Thread):
                 data = ''
                 reply_text = ''
                 message = que.get()                               # 取出队列第一个元素
-                if isinstance(message[1], str):                   # 如果data是str则返回
+                if isinstance(message[1], str):                   # 如果data是str则返
                     for i in range(len(users)):
                         # user[i][1]是用户名, users[i][2]是addr, 将message[0]改为用户名
                         for j in range(len(users)):
