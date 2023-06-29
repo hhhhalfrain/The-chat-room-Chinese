@@ -219,7 +219,7 @@ def send(*args):
     if chat == '机器人':
         print('机器人')
     if chat == user:
-        tkinter.messagebox.showerror('Send error', message='Cannot talk with yourself in private!')
+        tkinter.messagebox.showerror('Send error', message='不能和自己私聊')
         return
     mes = entry.get() + ':;' + user + ':;' + chat
     s.send(mes.encode())
