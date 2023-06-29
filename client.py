@@ -22,7 +22,7 @@ users = []  # 在线用户列表
 chat = '------Group chat-------'  # 聊天对象, 默认为群聊
 # 登陆窗口
 root1 = tkinter.Tk()
-root1.title('Log in')
+root1.title('登录窗口')
 root1['height'] = 110
 root1['width'] = 270
 root1.resizable(0, 0)  # 限制窗口大小
@@ -33,14 +33,14 @@ User = tkinter.StringVar()
 User.set('')
 
 # 服务器标签
-labelIP = tkinter.Label(root1, text='Server address')
+labelIP = tkinter.Label(root1, text='服务器地址：')
 labelIP.place(x=20, y=10, width=100, height=20)
 
 entryIP = tkinter.Entry(root1, width=80, textvariable=IP1)
 entryIP.place(x=120, y=10, width=130, height=20)
 
 # 用户名标签
-labelUser = tkinter.Label(root1, text='Username')
+labelUser = tkinter.Label(root1, text='用户名：')
 labelUser.place(x=30, y=40, width=80, height=20)
 
 entryUser = tkinter.Entry(root1, width=80, textvariable=User)
@@ -54,13 +54,13 @@ def login(*args):
     PORT = int(PORT)                     # 端口号需要为int类型
     user = entryUser.get()
     if not user:
-        tkinter.messagebox.showerror('Name type error', message='Username Empty!')
+        tkinter.messagebox.showerror('啊哦', message='请告诉我你是谁')
     else:
         root1.destroy()                  # 关闭窗口
 
 
 root1.bind('<Return>', login)            # 回车绑定登录功能
-but = tkinter.Button(root1, text='Log in', command=login)
+but = tkinter.Button(root1, text='上线', command=login)
 but.place(x=100, y=70, width=70, height=30)
 
 root1.mainloop()
@@ -70,7 +70,7 @@ s.connect((IP, PORT))
 if user:
     s.send(user.encode())  # 发送用户名
 else:
-    s.send('no'.encode())  # 没有输入用户名则标记no
+    s.send('匿名用户'.encode())  # 没有输入用户名则标记no
 
 # 如果没有用户名则将ip和端口号设置为用户名
 addr = s.getsockname()  # 获取客户端ip和端口号
@@ -94,7 +94,7 @@ listbox.tag_config('red', foreground='red')
 listbox.tag_config('blue', foreground='blue')
 listbox.tag_config('green', foreground='green')
 listbox.tag_config('pink', foreground='pink')
-listbox.insert(tkinter.END, 'Welcome to the chat room!', 'blue')
+listbox.insert(tkinter.END, '您已上线', 'blue')
 
 # 表情功能代码部分
 # 四个按钮, 使用全局变量, 方便创建和销毁
@@ -169,7 +169,7 @@ def express():
 
 
 # 创建表情按钮
-eBut = tkinter.Button(root, text='emoji', command=express)
+eBut = tkinter.Button(root, text='表情', command=express)
 eBut.place(x=5, y=320, width=60, height=30)
 
 
@@ -191,7 +191,7 @@ def users():
 
 
 # 查看在线用户按钮
-button1 = tkinter.Button(root, text='Users online', command=users)
+button1 = tkinter.Button(root, text='在线用户列表', command=users)
 button1.place(x=485, y=320, width=90, height=30)
 
 # 创建输入文本框和关联变量
@@ -238,7 +238,7 @@ def call_robot(url, apikey, msg):
 
 def send(*args):
     # 没有添加的话发送信息时会提示没有聊天对象
-    users.append('------Group chat-------')
+    users.append(chat)
     users.append('Robot')
     print(chat)
     if chat not in users:
@@ -290,7 +290,7 @@ def recv():
             data = json.loads(data)
             users = data
             listbox1.delete(0, tkinter.END)  # 清空列表框
-            number = ('   Users online: ' + str(len(data)))
+            number = ('在线用户个数：' + str(len(data)+1))
             listbox1.insert(tkinter.END, number)
             listbox1.itemconfig(tkinter.END, fg='green', bg="#f0f0ff")
             listbox1.insert(tkinter.END, '------Group chat-------')
@@ -326,7 +326,7 @@ def recv():
                     listbox.insert(tkinter.END, data4, 'red')  # END将信息加在最后一行
                 if pic[0] == '``':
                     # 从服务端下载发送的图片
-                    fileGet(pic[1])
+                    pass
                 else:
                     # 将表情图贴到聊天框
                     listbox.image_create(tkinter.END, image=dic[markk])
