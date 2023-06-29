@@ -355,6 +355,6 @@ def recv():
 
 r = threading.Thread(target=recv)
 r.start()  # 开始线程接收信息
-
+#
 root.mainloop()
 s.close()  # 关闭图形界面后关闭TCP连接
