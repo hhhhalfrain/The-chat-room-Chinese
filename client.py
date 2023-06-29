@@ -220,9 +220,9 @@ def call_robot(url, apikey, msg):
             # 客户端属性信息
             "selfInfo": {  # location 为selfInfo的参数信息，
                 "location": {  # 地理位置信息
-                    "city": "杭州",  # 所在城市，不允许为空
-                    "province": "浙江省",  # 所在省份，允许为空
-                    "street": "灵隐街道"  # 所在街道，允许为空
+                    "city": "佛山",  # 所在城市，不允许为空
+                    "province": "广东省",  # 所在省份，允许为空
+                    "street": "ABCDEF"  # 所在街道，允许为空
                 }
             },
         },
