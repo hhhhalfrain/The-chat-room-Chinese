@@ -1,45 +1,36 @@
 import socket
 import threading
-import json  # json.dumps(some)打包   json.loads(some)解包
+import json
 import tkinter
 import tkinter.messagebox
-from tkinter.scrolledtext import ScrolledText  # 导入多行文本框用到的包
-import time
+from tkinter.scrolledtext import ScrolledText
 import requests
-from tkinter import filedialog
-import vachat
-import os
-from time import sleep
-from PIL import ImageGrab
-from netifaces import interfaces, ifaddresses, AF_INET6
 
 IP = ''
 PORT = ''
 user = ''
-listbox1 = ''  # 用于显示在线用户的列表框
-ii = 0  # 用于判断是开还是关闭列表框
-users = []  # 在线用户列表
-chat = '-------开始群聊---------'  # 聊天对象, 默认为群聊
-# 登陆窗口
+listbox1 = ''
+ii = 0
+users = []
+chat = '-------开始群聊---------'
+
 root1 = tkinter.Tk()
 root1.title('登录窗口')
 root1['height'] = 110
 root1['width'] = 270
-root1.resizable(0, 0)  # 限制窗口大小
+root1.resizable(0, 0)
 
 IP1 = tkinter.StringVar()
-IP1.set('127.0.0.1:50007')  # 默认显示的ip和端口
+IP1.set('127.0.0.1:50007')
 User = tkinter.StringVar()
 User.set('')
 
-# 服务器标签
 labelIP = tkinter.Label(root1, text='服务器地址：')
 labelIP.place(x=20, y=10, width=100, height=20)
 
 entryIP = tkinter.Entry(root1, width=80, textvariable=IP1)
 entryIP.place(x=120, y=10, width=130, height=20)
 
-# 用户名标签
 labelUser = tkinter.Label(root1, text='用户名：')
 labelUser.place(x=30, y=40, width=80, height=20)
 
@@ -47,19 +38,18 @@ entryUser = tkinter.Entry(root1, width=80, textvariable=User)
 entryUser.place(x=120, y=40, width=130, height=20)
 
 
-# 登录按钮
 def login(*args):
     global IP, PORT, user
-    IP, PORT = entryIP.get().split(':')  # 获取IP和端口号
-    PORT = int(PORT)                     # 端口号需要为int类型
+    IP, PORT = entryIP.get().split(':')
+    PORT = int(PORT)
     user = entryUser.get()
     if not user:
         tkinter.messagebox.showerror('啊哦', message='请告诉我你是谁')
     else:
-        root1.destroy()                  # 关闭窗口
+        root1.destroy()
 
 
-root1.bind('<Return>', login)            # 回车绑定登录功能
+root1.bind('<Return>', login)
 but = tkinter.Button(root1, text='上线', command=login)
 but.place(x=100, y=70, width=70, height=30)
 
@@ -68,54 +58,45 @@ root1.mainloop()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((IP, PORT))
 if user:
-    s.send(user.encode())  # 发送用户名
+    s.send(user.encode())
 else:
-    s.send('匿名用户'.encode())  # 没有输入用户名则标记no
+    s.send('匿名用户'.encode())
 
-# 如果没有用户名则将ip和端口号设置为用户名
-addr = s.getsockname()  # 获取客户端ip和端口号
+addr = s.getsockname()
 addr = addr[0] + ':' + str(addr[1])
 if user == '':
     user = addr
 
-# 聊天窗口
-# 创建图形界面
 root = tkinter.Tk()
-root.title(user)  # 窗口命名为用户名
+root.title(user)
 root['height'] = 400
 root['width'] = 580
-root.resizable(0, 0)  # 限制窗口大小
+root.resizable(0, 0)
 
-# 创建多行文本框
 listbox = ScrolledText(root)
 listbox.place(x=5, y=0, width=570, height=320)
-# 文本框使用的字体颜色
+
 listbox.tag_config('red', foreground='red')
 listbox.tag_config('blue', foreground='blue')
 listbox.tag_config('green', foreground='green')
 listbox.tag_config('pink', foreground='pink')
 listbox.insert(tkinter.END, '您已上线', 'blue')
 
-# 表情功能代码部分
-# 四个按钮, 使用全局变量, 方便创建和销毁
 b1 = ''
 b2 = ''
 b3 = ''
 b4 = ''
-# 将图片打开存入变量中
+
 p1 = tkinter.PhotoImage(file='./emoji/facepalm.png')
 p2 = tkinter.PhotoImage(file='./emoji/smirk.png')
 p3 = tkinter.PhotoImage(file='./emoji/concerned.png')
 p4 = tkinter.PhotoImage(file='./emoji/smart.png')
-# 用字典将标记与表情图片一一对应, 用于后面接收标记判断表情贴图
+
 dic = {'aa**': p1, 'bb**': p2, 'cc**': p3, 'dd**': p4}
-ee = 0  # 判断表情面板开关的标志
+ee = 0
 
 
-# 发送表情图标记的函数, 在按钮点击事件中调用
-
-
-def mark(exp):  # 参数是发的表情图标记, 发送后将按钮销毁
+def mark(exp):
     global ee
     mes = exp + ':;' + user + ':;' + chat
     s.send(mes.encode())
@@ -126,7 +107,6 @@ def mark(exp):  # 参数是发的表情图标记, 发送后将按钮销毁
     ee = 0
 
 
-# 四个对应的函数
 def bb1():
     mark('aa**')
 
@@ -168,14 +148,9 @@ def express():
         b4.destroy()
 
 
-# 创建表情按钮
 eBut = tkinter.Button(root, text='表情', command=express)
 eBut.place(x=5, y=320, width=60, height=30)
 
-
-
-
-# 创建多行文本框, 显示在线用户
 listbox1 = tkinter.Listbox(root)
 listbox1.place(x=445, y=0, width=130, height=320)
 
@@ -186,15 +161,13 @@ def users():
         listbox1.place(x=445, y=0, width=130, height=320)
         ii = 0
     else:
-        listbox1.place_forget()  # 隐藏控件
+        listbox1.place_forget()
         ii = 1
 
 
-# 查看在线用户按钮
 button1 = tkinter.Button(root, text='在线用户列表', command=users)
 button1.place(x=485, y=320, width=90, height=30)
 
-# 创建输入文本框和关联变量
 a = tkinter.StringVar()
 a.set('')
 entry = tkinter.Entry(root, width=120, textvariable=a)
@@ -205,39 +178,38 @@ def call_robot(url, apikey, msg):
     data = {
         "reqType": 0,
         "perception": {
-            # 用户输入文文信息
-            "inputText": {  # inputText文本信息
+
+            "inputText": {
                 "text": msg
             },
-            # 用户输入图片url
-            "inputImage": {  # 图片信息，后跟参数信息为url地址，string类型
+
+            "inputImage": {
                 "url": "https://cn.bing.com/images/"
             },
-            # 用户输入音频地址信息
-            "inputMedia": {  # 音频信息，后跟参数信息为url地址，string类型
+
+            "inputMedia": {
                 "url": "https://www.1ting.com/"
             },
-            # 客户端属性信息
-            "selfInfo": {  # location 为selfInfo的参数信息，
-                "location": {  # 地理位置信息
-                    "city": "佛山",  # 所在城市，不允许为空
-                    "province": "广东省",  # 所在省份，允许为空
-                    "street": "ABCDEF"  # 所在街道，允许为空
+
+            "selfInfo": {
+                "location": {
+                    "city": "佛山",
+                    "province": "广东省",
+                    "street": "ABCDEF"
                 }
             },
         },
         "userInfo": {
-            "apiKey": "ee19328107fa41e987a42a064a68d0da",  # 你注册的apikey,机器人标识,32位
-            "userId": "Brandon"  # 随便填，用户的唯一标识，长度小于等于32位
+            "apiKey": "ee19328107fa41e987a42a064a68d0da",
+            "userId": "Brandon"
         }
     }
-    headers = {'content-type': 'application/json'}  # 必须是json
+    headers = {'content-type': 'application/json'}
     r = requests.post(url, headers=headers, data=json.dumps(data))
     return r.json()
 
 
 def send(*args):
-    # 没有添加的话发送信息时会提示没有聊天对象
     users.append(chat)
     users.append('机器人')
     print(chat)
@@ -249,25 +221,24 @@ def send(*args):
     if chat == user:
         tkinter.messagebox.showerror('Send error', message='Cannot talk with yourself in private!')
         return
-    mes = entry.get() + ':;' + user + ':;' + chat  # 添加聊天对象标记
+    mes = entry.get() + ':;' + user + ':;' + chat
     s.send(mes.encode())
-    a.set('')  # 发送后清空文本框
+    a.set('')
 
 
-# 创建发送按钮
 button = tkinter.Button(root, text='发送', command=send)
 button.place(x=515, y=353, width=60, height=30)
-root.bind('<Return>', send)  # 绑定回车发送信息
+root.bind('<Return>', send)
 
 
 def private(*args):
     global chat
-    # 获取点击的索引然后得到内容(用户名)
+
     indexs = listbox1.curselection()
     index = indexs[0]
     if index > 0:
         chat = listbox1.get(index)
-        # 修改客户端名称
+
         if chat == '-------开始群聊---------':
             root.title(user)
             return
@@ -275,22 +246,20 @@ def private(*args):
         root.title(ti)
 
 
-# 在显示用户列表框上设置绑定事件
 listbox1.bind('<ButtonRelease-1>', private)
 
 
-# 用于时刻接收服务端发送的信息并打印
 def recv():
     global users
     while True:
         data = s.recv(1024)
         data = data.decode()
-        # 没有捕获到异常则表示接收到的是在线用户列表
+
         try:
             data = json.loads(data)
             users = data
-            listbox1.delete(0, tkinter.END)  # 清空列表框
-            number = ('在线用户个数：' + str(len(data)+1))
+            listbox1.delete(0, tkinter.END)
+            number = ('在线用户个数：' + str(len(data) + 1))
             listbox1.insert(tkinter.END, number)
             listbox1.itemconfig(tkinter.END, fg='green', bg="#f0f0ff")
             listbox1.insert(tkinter.END, '-------开始群聊---------')
@@ -301,9 +270,9 @@ def recv():
                 listbox1.itemconfig(tkinter.END, fg='green')
         except:
             data = data.split(':;')
-            data1 = data[0].strip()  # 消息
-            data2 = data[1]  # 发送信息的用户名
-            data3 = data[2]  # 聊天对象
+            data1 = data[0].strip()
+            data2 = data[1]
+            data3 = data[2]
             if 'INVITE' in data1:
                 if data3 == '机器人':
                     tkinter.messagebox.showerror('Connect error', message='Unable to make video chat with 机器人!')
@@ -311,32 +280,29 @@ def recv():
                     tkinter.messagebox.showerror('Connect error', message='Group video chat is not supported!')
                 continue
             markk = data1.split('：')[1]
-            # 判断是不是图片
+
             pic = markk.split('#')
-            # 判断是不是表情
-            # 如果字典里有则贴图
+
             if (markk in dic) or pic[0] == '``':
-                data4 = '\n' + data2 + '：'  # 例:名字-> \n名字：
+                data4 = '\n' + data2 + '：'
                 if data3 == '-------开始群聊---------':
-                    if data2 == user:  # 如果是自己则将则字体变为蓝色
+                    if data2 == user:
                         listbox.insert(tkinter.END, data4, 'blue')
                     else:
-                        listbox.insert(tkinter.END, data4, 'green')  # END将信息加在最后一行
-                elif data2 == user or data3 == user:  # 显示私聊
-                    listbox.insert(tkinter.END, data4, 'red')  # END将信息加在最后一行
+                        listbox.insert(tkinter.END, data4, 'green')
+                elif data2 == user or data3 == user:
+                    listbox.insert(tkinter.END, data4, 'red')
                 if pic[0] == '``':
-                    # 从服务端下载发送的图片
                     pass
                 else:
-                    # 将表情图贴到聊天框
                     listbox.image_create(tkinter.END, image=dic[markk])
             else:
                 data1 = '\n' + data1
                 if data3 == '-------开始群聊---------':
-                    if data2 == user:  # 如果是自己则将则字体变为蓝色
+                    if data2 == user:
                         listbox.insert(tkinter.END, data1, 'blue')
                     else:
-                        listbox.insert(tkinter.END, data1, 'green')  # END将信息加在最后一行
+                        listbox.insert(tkinter.END, data1, 'green')
                     if len(data) == 4:
                         listbox.insert(tkinter.END, '\n' + data[3], 'pink')
                 elif data3 == '机器人' and data2 == user:
@@ -348,13 +314,13 @@ def recv():
                     reply = call_robot(url, apikey, data1.split('：')[1])
                     reply_txt = '\n机器人:' + reply['results'][0]['values']['text']
                     listbox.insert(tkinter.END, reply_txt, 'pink')
-                elif data2 == user or data3 == user:  # 显示私聊
-                    listbox.insert(tkinter.END, data1, 'red')  # END将信息加在最后一行
-            listbox.see(tkinter.END)  # 显示在最后
+                elif data2 == user or data3 == user:
+                    listbox.insert(tkinter.END, data1, 'red')
+            listbox.see(tkinter.END)
 
 
 r = threading.Thread(target=recv)
-r.start()  # 开始线程接收信息
+r.start()
 #
 root.mainloop()
-s.close()  # 关闭图形界面后关闭TCP连接
+s.close()
