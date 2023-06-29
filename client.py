@@ -239,13 +239,13 @@ def call_robot(url, apikey, msg):
 def send(*args):
     # 没有添加的话发送信息时会提示没有聊天对象
     users.append(chat)
-    users.append('Robot')
+    users.append('机器人')
     print(chat)
     if chat not in users:
         tkinter.messagebox.showerror('Send error', message='There is nobody to talk to!')
         return
-    if chat == 'Robot':
-        print('Robot')
+    if chat == '机器人':
+        print('机器人')
     if chat == user:
         tkinter.messagebox.showerror('Send error', message='Cannot talk with yourself in private!')
         return
@@ -294,7 +294,7 @@ def recv():
             listbox1.insert(tkinter.END, number)
             listbox1.itemconfig(tkinter.END, fg='green', bg="#f0f0ff")
             listbox1.insert(tkinter.END, '-------开始群聊---------')
-            listbox1.insert(tkinter.END, 'Robot')
+            listbox1.insert(tkinter.END, '机器人')
             listbox1.itemconfig(tkinter.END, fg='green')
             for i in range(len(data)):
                 listbox1.insert(tkinter.END, (data[i]))
@@ -305,8 +305,8 @@ def recv():
             data2 = data[1]  # 发送信息的用户名
             data3 = data[2]  # 聊天对象
             if 'INVITE' in data1:
-                if data3 == 'Robot':
-                    tkinter.messagebox.showerror('Connect error', message='Unable to make video chat with robot!')
+                if data3 == '机器人':
+                    tkinter.messagebox.showerror('Connect error', message='Unable to make video chat with 机器人!')
                 elif data3 == '-------开始群聊---------':
                     tkinter.messagebox.showerror('Connect error', message='Group video chat is not supported!')
                 continue
@@ -339,14 +339,14 @@ def recv():
                         listbox.insert(tkinter.END, data1, 'green')  # END将信息加在最后一行
                     if len(data) == 4:
                         listbox.insert(tkinter.END, '\n' + data[3], 'pink')
-                elif data3 == 'Robot' and data2 == user:
-                    print('Here:Robot')
+                elif data3 == '机器人' and data2 == user:
+                    print('Here:机器人')
                     apikey = 'ee19328107fa41e987a42a064a68d0da'
                     url = 'http://openapi.tuling123.com/openapi/api/v2'
                     print('msg = ', data1)
                     listbox.insert(tkinter.END, data1, 'blue')
                     reply = call_robot(url, apikey, data1.split('：')[1])
-                    reply_txt = '\nRobot:' + reply['results'][0]['values']['text']
+                    reply_txt = '\n机器人:' + reply['results'][0]['values']['text']
                     listbox.insert(tkinter.END, reply_txt, 'pink')
                 elif data2 == user or data3 == user:  # 显示私聊
                     listbox.insert(tkinter.END, data1, 'red')  # END将信息加在最后一行
