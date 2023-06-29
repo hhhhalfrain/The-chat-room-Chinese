@@ -19,7 +19,7 @@ user = ''
 listbox1 = ''  # 用于显示在线用户的列表框
 ii = 0  # 用于判断是开还是关闭列表框
 users = []  # 在线用户列表
-chat = '------Group chat-------'  # 聊天对象, 默认为群聊
+chat = '-------开始群聊---------'  # 聊天对象, 默认为群聊
 # 登陆窗口
 root1 = tkinter.Tk()
 root1.title('登录窗口')
@@ -268,7 +268,7 @@ def private(*args):
     if index > 0:
         chat = listbox1.get(index)
         # 修改客户端名称
-        if chat == '------Group chat-------':
+        if chat == '-------开始群聊---------':
             root.title(user)
             return
         ti = user + '  -->  ' + chat
@@ -293,7 +293,7 @@ def recv():
             number = ('在线用户个数：' + str(len(data)+1))
             listbox1.insert(tkinter.END, number)
             listbox1.itemconfig(tkinter.END, fg='green', bg="#f0f0ff")
-            listbox1.insert(tkinter.END, '------Group chat-------')
+            listbox1.insert(tkinter.END, '-------开始群聊---------')
             listbox1.insert(tkinter.END, 'Robot')
             listbox1.itemconfig(tkinter.END, fg='green')
             for i in range(len(data)):
@@ -307,7 +307,7 @@ def recv():
             if 'INVITE' in data1:
                 if data3 == 'Robot':
                     tkinter.messagebox.showerror('Connect error', message='Unable to make video chat with robot!')
-                elif data3 == '------Group chat-------':
+                elif data3 == '-------开始群聊---------':
                     tkinter.messagebox.showerror('Connect error', message='Group video chat is not supported!')
                 continue
             markk = data1.split('：')[1]
@@ -317,7 +317,7 @@ def recv():
             # 如果字典里有则贴图
             if (markk in dic) or pic[0] == '``':
                 data4 = '\n' + data2 + '：'  # 例:名字-> \n名字：
-                if data3 == '------Group chat-------':
+                if data3 == '-------开始群聊---------':
                     if data2 == user:  # 如果是自己则将则字体变为蓝色
                         listbox.insert(tkinter.END, data4, 'blue')
                     else:
@@ -332,7 +332,7 @@ def recv():
                     listbox.image_create(tkinter.END, image=dic[markk])
             else:
                 data1 = '\n' + data1
-                if data3 == '------Group chat-------':
+                if data3 == '-------开始群聊---------':
                     if data2 == user:  # 如果是自己则将则字体变为蓝色
                         listbox.insert(tkinter.END, data1, 'blue')
                     else:
