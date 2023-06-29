@@ -124,13 +124,13 @@ class ChatServer(threading.Thread):
         finally:
             lock.release()
 
-    # 将队列que中的消息发送给所有连接到的用户2222454545
+    # 将队列que中的消息发送给所有连接到的用户
     def sendData(self):
         while True:
             if not que.empty():
                 data = ''
                 reply_text = ''
-                message = que.get()                               # 取出队列第一个元素55454
+                message = que.get()                               # 取出队列第一个元素
                 if isinstance(message[1], str):                   # 如果data是str则返回
                     for i in range(len(users)):
                         # user[i][1]是用户名, users[i][2]是addr, 将message[0]改为用户名
